@@ -3,16 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "description": "Autonomous Hyperledger Fabric investigation platform",
-  "workspaces": [
-    "backend",
-    "frontend",
-    "packages/*",
-    "fabric/chaincode/*"
-  ],
   "scripts": {
-    "build": "npm run --workspace=frontend build && npm run --workspace=backend build",
-    "frontend:dev": "npm run --workspace=frontend dev",
-    "frontend:build": "npm run --workspace=frontend build",
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "backend:dev": "npm run --workspace=backend dev",
     "backend:build": "npm run --workspace=backend build",
     "backend:start": "npm run --workspace=backend start",
@@ -21,6 +16,31 @@
     "network:reset": "bash fabric/scripts/reset-network.sh",
     "chaincode:deploy": "bash fabric/scripts/deploy-chaincode.sh",
     "sample:run": "bash fabric/scripts/run-sample-workflow.sh"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "packages/*",
+    "fabric/chaincode/*"
+  ],
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.436.0",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "reactflow": "^11.11.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   },
   "engines": {
     "node": ">=18.0.0"
