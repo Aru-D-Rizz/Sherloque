@@ -105,6 +105,7 @@ export class AssetTransferContract extends Contract {
     if (existsRaw && existsRaw.length > 0) {
       throw new Error(`Asset ${id} already exists`);
     }
+    // existsRaw is Uint8Array — use Buffer.from() for all string conversions
 
     const validTypes: AssetType[] = ['SHIPMENT', 'INVOICE', 'PURCHASE_ORDER'];
     if (!validTypes.includes(assetType as AssetType)) {
@@ -144,7 +145,7 @@ export class AssetTransferContract extends Contract {
     if (!raw || raw.length === 0) {
       throw new Error(`Asset ${id} does not exist`);
     }
-    return raw.toString('utf8');
+    return Buffer.from(raw).toString('utf8');
   }
 
   /**
@@ -170,7 +171,7 @@ export class AssetTransferContract extends Contract {
       throw new Error(`Asset ${id} does not exist`);
     }
 
-    const asset: Asset = JSON.parse(raw.toString('utf8'));
+    const asset: Asset = JSON.parse(Buffer.from(raw).toString('utf8'));
 
     if (description.trim() !== '') {
       asset.description = description;
@@ -225,7 +226,7 @@ export class AssetTransferContract extends Contract {
       throw new Error(`Asset ${id} does not exist`);
     }
 
-    const asset: Asset = JSON.parse(raw.toString('utf8'));
+    const asset: Asset = JSON.parse(Buffer.from(raw).toString('utf8'));
     const previousOwner = asset.owner;
     const previousOrg = asset.ownerOrganization;
 
@@ -270,6 +271,8 @@ export class AssetTransferContract extends Contract {
     await ctx.stub.deleteState(id);
   }
 
+  // ── Existence re-check used internally by DeleteAsset ───────────────────
+
   // ── Investigation queries ────────────────────────────────────────────────
 
   /**
@@ -284,14 +287,10 @@ export class AssetTransferContract extends Contract {
    * This is the primary evidence source for the Phase 3 investigation agents.
    */
   async GetAssetHistory(ctx: Context, id: string): Promise<string> {
-    const iterator = await ctx.stub.getHistoryForKey(id);
     const history: AssetHistoryEntry[] = [];
 
-    while (true) {
-      const result = await iterator.next();
-      if (result.done) break;
-
-      const kv = result.value;
+    // Use for-await-of — the iterator is AsyncIterable<KeyModification>
+    for await (const kv of ctx.stub.getHistoryForKey(id)) {
       const millis =
         kv.timestamp.seconds.toNumber() * 1000 + Math.floor(kv.timestamp.nanos / 1e6);
 
@@ -299,12 +298,11 @@ export class AssetTransferContract extends Contract {
         txId: kv.txId,
         timestamp: new Date(millis).toISOString(),
         isDelete: kv.isDelete,
-        value: kv.isDelete ? null : JSON.parse(kv.value.toString('utf8')),
+        value: kv.isDelete ? null : JSON.parse(Buffer.from(kv.value).toString('utf8')),
       };
       history.push(entry);
     }
 
-    await iterator.close();
     return JSON.stringify(history);
   }
 
@@ -318,14 +316,11 @@ export class AssetTransferContract extends Contract {
    * Returns an array of AssetSummary objects.
    */
   async GetAllAssets(ctx: Context): Promise<string> {
-    const iterator = await ctx.stub.getStateByRange('', '');
     const assets: AssetSummary[] = [];
 
-    while (true) {
-      const result = await iterator.next();
-      if (result.done) break;
-
-      const asset: Asset = JSON.parse(result.value.value.toString('utf8'));
+    // Use for-await-of — the iterator is AsyncIterable<KV>
+    for await (const kv of ctx.stub.getStateByRange('', '')) {
+      const asset: Asset = JSON.parse(Buffer.from(kv.value).toString('utf8'));
       assets.push({
         id: asset.id,
         type: asset.type,
@@ -336,7 +331,6 @@ export class AssetTransferContract extends Contract {
       });
     }
 
-    await iterator.close();
     return JSON.stringify(assets);
   }
 }
