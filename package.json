@@ -1,0 +1,22 @@
+{
+  "name": "sherloque",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Autonomous Hyperledger Fabric investigation platform",
+  "workspaces": [
+    "backend",
+    "frontend",
+    "packages/*",
+    "fabric/chaincode/*"
+  ],
+  "scripts": {
+    "network:start": "bash fabric/scripts/start-network.sh",
+    "network:stop": "bash fabric/scripts/stop-network.sh",
+    "network:reset": "bash fabric/scripts/reset-network.sh",
+    "chaincode:deploy": "bash fabric/scripts/deploy-chaincode.sh",
+    "sample:run": "bash fabric/scripts/run-sample-workflow.sh"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

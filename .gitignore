@@ -1,0 +1,48 @@
+﻿# ─── Node ────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+build/
+.next/
+out/
+
+# ─── Environment / Secrets ───────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ─── Hyperledger Fabric runtime artefacts ────────────────────────────────────
+fabric/network/organizations/
+fabric/network/channel-artifacts/
+fabric/network/system-genesis-block/
+fabric/network/ledger/
+fabric/network/production/
+fabric/network/fabric-ca/
+fabric/bin/
+fabric/*.tar.gz
+fabric/network/docker/peersOrgs/
+
+# ─── Chaincode build artefacts ───────────────────────────────────────────────
+fabric/chaincode/**/node_modules/
+fabric/chaincode/**/dist/
+fabric/chaincode/**/*.tgz
+
+# ─── IDE ─────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+desktop.ini
+Thumbs.db
