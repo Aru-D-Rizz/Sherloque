@@ -10,6 +10,12 @@
     "fabric/chaincode/*"
   ],
   "scripts": {
+    "build": "npm run --workspace=frontend build && npm run --workspace=backend build",
+    "frontend:dev": "npm run --workspace=frontend dev",
+    "frontend:build": "npm run --workspace=frontend build",
+    "backend:dev": "npm run --workspace=backend dev",
+    "backend:build": "npm run --workspace=backend build",
+    "backend:start": "npm run --workspace=backend start",
     "network:start": "bash fabric/scripts/start-network.sh",
     "network:stop": "bash fabric/scripts/stop-network.sh",
     "network:reset": "bash fabric/scripts/reset-network.sh",

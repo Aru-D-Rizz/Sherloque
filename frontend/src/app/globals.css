@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0d1117;
+  --foreground: #e6edf3;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+}
+
+.react-flow__background { background: #0d1117 !important; }
+.react-flow__minimap { background: #161b22 !important; }
